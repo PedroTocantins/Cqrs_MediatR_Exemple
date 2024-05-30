@@ -1,4 +1,5 @@
-﻿using CqrsMediatr.Domain.Abstractions;
+﻿using CqrsMediatr.Application.Members.Commands.Notifications;
+using CqrsMediatr.Domain.Abstractions;
 using CqrsMediatr.Domain.Entities;
 using MediatR;
 using System;
@@ -13,10 +14,12 @@ public class CreateMemberCommand : MemberCommandBase
     public sealed class CreateMemberCommandHandler : IRequestHandler<CreateMemberCommand, Member>
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMediator _mediator;
 
-        public CreateMemberCommandHandler(IUnitOfWork unitOfWork)
+        public CreateMemberCommandHandler(IUnitOfWork unitOfWork, IMediator mediator)
         {
             _unitOfWork = unitOfWork;
+            _mediator = mediator;
         }
 
         public async Task<Member> Handle(CreateMemberCommand request, CancellationToken cancellationToken)
@@ -25,6 +28,8 @@ public class CreateMemberCommand : MemberCommandBase
 
             await _unitOfWork.MemberRepository.AddMember(newMember);
             await _unitOfWork.CommitAssync();
+
+            await _mediator.Publish(new MemberCreatedNotification(newMember), cancellationToken);
 
             return newMember;
         }
