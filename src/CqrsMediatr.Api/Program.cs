@@ -1,7 +1,5 @@
-using CqrsMediatr.Api.Controllers;
+using CqrsMediatr.Api.Filters;
 using CqrsMediatr.CrossCutting.AppDependencies;
-using CqrsMediatr.Domain.Abstractions;
-using CqrsMediatr.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +9,11 @@ builder.Services.AddSwaggerGen();
 
 //registro dos serviços
 builder.Services.AddInfrastructure(builder.Configuration);
+
+builder.Services.AddMvc(options =>
+{
+    options.Filters.Add(new CustomExceptionFilter());
+});
 
 var app = builder.Build();
 
