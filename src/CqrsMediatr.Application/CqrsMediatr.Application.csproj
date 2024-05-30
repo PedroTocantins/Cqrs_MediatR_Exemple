@@ -7,7 +7,6 @@
   <ItemGroup>
     <Folder Include="Abstractions\" />
     <Folder Include="DTOs\" />
-    <Folder Include="Members\Queries\" />
     <Folder Include="Services\" />
   </ItemGroup>
 

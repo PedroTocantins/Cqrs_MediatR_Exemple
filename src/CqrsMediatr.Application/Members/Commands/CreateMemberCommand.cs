@@ -8,14 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CqrsMediatr.Application.Members.Commands;
-public class CreateMemberCommand : IRequest<Member>
+public class CreateMemberCommand : MemberCommandBase
 {
-    public string? FirstName { get;  set; }
-    public string? LastName { get;  set; }
-    public string? Gender { get; set; }
-    public string? Email { get; set; }
-    public bool? IsActive { get; set; }
-
     public sealed class CreateMemberCommandHandler : IRequestHandler<CreateMemberCommand, Member>
     {
         private readonly IUnitOfWork _unitOfWork;

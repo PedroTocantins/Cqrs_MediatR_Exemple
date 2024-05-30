@@ -1,4 +1,5 @@
 ﻿using CqrsMediatr.Application.Members.Commands;
+using CqrsMediatr.Application.Members.Queries;
 using CqrsMediatr.Domain.Abstractions;
 using CqrsMediatr.Domain.Entities;
 using CqrsMediatr.Infrastructure.Repositories;
@@ -13,19 +14,28 @@ namespace CqrsMediatr.Api.Controllers;
 public class MembersController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly IUnitOfWork _unitOfWork;
 
     public MembersController(IMediator mediator, IUnitOfWork unityOfWork)
     {
         _mediator = mediator;
-        _unitOfWork = unityOfWork;
+
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetMembers()
+    {
+        var query = new GetMembersQuery();
+        var members = await _mediator.Send(query);
+        return Ok(members);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetMember(int id)
     {
-        var member = await _unitOfWork.MemberRepository.GetMemberById(id);
-        return member != null ? Ok(member) : NotFound("Member not found");
+        var query = new GetMemberByIdQuery { Id = id };
+        var member = await _mediator.Send(query);
+
+        return member != null ? Ok(member) : NotFound("Member not found.");
     }
 
     [HttpPost]
